@@ -14,7 +14,7 @@ async function bootstrap() {
     .setTitle('self-checkout api')
     .setDescription('The self-checkout API description')
     .setVersion('1.0')
-    .addTag('stock', 'Endpoints related to stock')
+    .addTag('Stock', 'Endpoints related to Stock')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

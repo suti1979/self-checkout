@@ -13,11 +13,17 @@ export class StockService {
     return await this.stockRepository.find();
   }
 
+  async getStockById(id: string): Promise<Stock> {
+    return await this.stockRepository.findOneBy({ id: id });
+  }
+
   async createStock(stock: Stock): Promise<Stock> {
     return await this.stockRepository.save(stock);
   }
 
-  async updateStock(stock: Stock): Promise<Stock> {
-    return await this.stockRepository.save(stock);
+  async updateStock(id: string, stock: Stock): Promise<Stock> {
+    const stockToUpdate = await this.getStockById(id);
+    stockToUpdate.data = stock.data;
+    return await this.stockRepository.save(stockToUpdate);
   }
 }

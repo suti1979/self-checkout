@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
@@ -16,5 +16,10 @@ export class StockController {
   @Post()
   async updateStock(@Body() body: Stock) {
     return await this.stockService.createStock(body);
+  }
+
+  @Patch(':id')
+  async createStock(@Param('id') id: string, @Body() body: Stock) {
+    return await this.stockService.updateStock(id, body);
   }
 }

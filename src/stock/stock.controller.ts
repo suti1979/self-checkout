@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 import { CheckoutDto } from './dto/checkout.dto';
+import { CustomExceptionFilter } from './exception.filter';
 
 @ApiTags('Stock')
 @Controller('api/v1')
@@ -25,6 +26,7 @@ export class StockController {
   }
 
   @Post('checkout/:id')
+  @UseFilters(CustomExceptionFilter)
   async checkout(@Param('id') id: string, @Body() body: CheckoutDto) {
     return await this.stockService.checkout(id, body);
   }

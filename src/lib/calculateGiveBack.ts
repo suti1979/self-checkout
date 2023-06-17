@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { TransactionData } from 'src/stock/entities/stock.entity';
 
 export function calculateGiveBack(
@@ -24,12 +25,12 @@ export function calculateGiveBack(
     if (validKeys.includes(key)) {
       return acc + parseInt(key) * inserted[key];
     } else {
-      throw new Error(`Invalid banknote: ${key}`);
+      throw new HttpException(`Invalid banknote: ${key}`, HttpStatus.BAD_REQUEST);
     }
   }, 0);
 
   if (totalInserted < price) {
-    throw new Error('Insufficient funds');
+    throw new HttpException(`Not enough money`, HttpStatus.BAD_REQUEST);
   }
 
   const giveBackNotes: TransactionData = {};
@@ -48,7 +49,10 @@ export function calculateGiveBack(
   }
 
   if (giveBackMoney > 0) {
-    throw new Error('Not enough banknotes to give back the required amount');
+    throw new HttpException(
+      `Not enough banknotes to give back the required amount`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   return giveBackNotes;

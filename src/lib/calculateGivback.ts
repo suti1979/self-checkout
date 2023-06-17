@@ -1,6 +1,10 @@
-import { Stock } from 'src/stock/entities/stock.entity';
+import { TransactionData } from 'src/stock/entities/stock.entity';
 
-export function calculateGiveBack(inserted: Stock, price: number): { [key: string]: number } {
+export function calculateGiveBack(
+  inserted: TransactionData,
+  price: number,
+  bank: TransactionData,
+): TransactionData {
   const validKeys = [
     '5',
     '10',
@@ -16,26 +20,36 @@ export function calculateGiveBack(inserted: Stock, price: number): { [key: strin
     '20000',
   ];
 
-  const totalInserted = Object.entries(inserted).reduce(
-    (acc, [key, value]) => acc + parseInt(key) * value,
-    0,
-  );
+  const totalInserted = Object.keys(inserted).reduce((acc, key) => {
+    if (validKeys.includes(key)) {
+      return acc + parseInt(key) * inserted[key];
+    } else {
+      throw new Error(`Invalid banknote: ${key}`);
+    }
+  }, 0);
 
   if (totalInserted < price) {
     throw new Error('Insufficient funds');
   }
 
-  const giveBack: { [key: string]: number } = {};
-  let remaining = totalInserted - price;
-  for (let i = validKeys.length - 1; i >= 0; i--) {
-    const key = validKeys[i];
-    const billValue = parseInt(key);
-    if (remaining >= billValue) {
-      const count = Math.floor(remaining / billValue);
-      giveBack[key] = count;
-      remaining -= count * billValue;
+  const giveBackNotes: TransactionData = {};
+  let giveBackMoney = totalInserted - price;
+
+  for (const key of validKeys.reverse()) {
+    if (giveBackMoney === 0) break;
+
+    const noteValue = parseInt(key);
+    const noteCount = Math.min(Math.floor(giveBackMoney / noteValue), bank[key] || 0);
+
+    if (noteCount > 0) {
+      giveBackNotes[key] = noteCount;
+      giveBackMoney -= noteValue * noteCount;
     }
   }
 
-  return giveBack;
+  if (giveBackMoney > 0) {
+    throw new Error('Not enough banknotes to give back the required amount');
+  }
+
+  return giveBackNotes;
 }

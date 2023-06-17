@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Stock } from './entities/stock.entity';
+import { Stock, TransactionData } from './entities/stock.entity';
 import { Repository } from 'typeorm';
 import { CheckoutDto } from './dto/checkout.dto';
 import { calculateGiveBack } from 'src/lib/calculateGivback';
@@ -27,14 +27,15 @@ export class StockService {
     return await this.stockRepository.save(stockToUpdate);
   }
 
-  async checkout(id: string, checkout: CheckoutDto): Promise<Stock> {
+  async checkout(id: string, checkout: CheckoutDto): Promise<TransactionData> {
     const stockToUpdate = await this.getStockById(id);
-    console.log(checkout);
 
-    const giveBack = calculateGiveBack(checkout.inserted, checkout.price);
-    console.log(giveBack);
+    const giveBack = calculateGiveBack(checkout.inserted, checkout.price, stockToUpdate.data);
 
-    // await this.stockRepository.save(stockToUpdate);
-    return { id, data: giveBack };
+    Object.keys(giveBack).forEach((key) => {
+      stockToUpdate.data[key] -= giveBack[key];
+    });
+    await this.stockRepository.save(stockToUpdate);
+    return giveBack;
   }
 }

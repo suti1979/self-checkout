@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Stock } from '../entities/stock.entity';
+import { TransactionData } from '../entities/stock.entity';
 
 export class CheckoutDto {
   @ApiProperty()
-  readonly inserted: Stock;
+  readonly inserted: TransactionData;
 
   @ApiProperty()
   readonly price: number;

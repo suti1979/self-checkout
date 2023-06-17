@@ -2,24 +2,30 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
+import { CheckoutDto } from './dto/checkout.dto';
 
 @ApiTags('Stock')
-@Controller('stock')
+@Controller('api/v1')
 export class StockController {
   constructor(private stockService: StockService) {}
 
-  @Get()
+  @Get('stock')
   async getStock() {
     return await this.stockService.getStock();
   }
 
-  @Post()
+  @Post('stock')
   async updateStock(@Body() body: Stock) {
     return await this.stockService.createStock(body);
   }
 
-  @Patch(':id')
+  @Patch('stock/:id')
   async createStock(@Param('id') id: string, @Body() body: Stock) {
     return await this.stockService.updateStock(id, body);
+  }
+
+  @Post('checkout/:id')
+  async checkout(@Param('id') id: string, @Body() body: CheckoutDto) {
+    return await this.stockService.checkout(id, body);
   }
 }

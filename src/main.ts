@@ -7,7 +7,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // to be used for all incoming requests to the NestJS application. This ensures that all incoming requests are automatically validated before they are processed by the application.
+  // to be used for all incoming requests to the NestJS application.
+  // This ensures that all incoming requests are automatically validated before they are processed by the application.
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
@@ -19,6 +20,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   const theme = new SwaggerTheme('v3');
+
   const options = {
     explorer: true,
     customCss: theme.getBuffer('dark'),

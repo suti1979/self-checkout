@@ -4,8 +4,8 @@ content-type: application/json
 
 {
   "inserted": {
-    "500": 1,
-    "1000": 1
+    "1000": 3,
+    "10000": 1
   },
   "price": 12300
 }
@@ -15,7 +15,7 @@ content-type: application/json
 GET http://localhost:4000/api/v1/stock
 
 
-### POST /stock
+### POST /create new stock
 
 # POST http://localhost:4000/api/v1/stock HTTP/1.1
 # content-type: application/json
@@ -28,9 +28,9 @@ GET http://localhost:4000/api/v1/stock
 #   }
 # }
 
-###
+### Patch /update stock
 
-PATCH http://localhost:4000/api/v1/stock/6dbb6c91-4361-4a22-9e48-d0997be84d89 HTTP/1.1
+PATCH http://localhost:4000/api/v1/stock/6dbb6c91-4361-4a22-9e48-d0997be84d8 HTTP/1.1
 content-type: application/json
 
 {

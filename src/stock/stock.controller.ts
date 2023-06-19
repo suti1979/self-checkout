@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
@@ -17,17 +26,20 @@ export class StockController {
   }
 
   @Post('stock')
-  //@ApiNotFoundResponse()
   @ApiCreatedResponse({ type: Stock })
   @ApiOperation({ summary: 'Create Stock' })
-  async updateStock(@Body() body: Stock) {
+  async createStock(@Body() body: Stock) {
     return await this.stockService.createStock(body);
   }
 
   @Patch('stock/:id')
   @ApiOperation({ summary: 'Update Stock' })
-  //@ApiNotFoundResponse()
-  async createStock(@Param('id') id: string, @Body() body: Stock) {
+  @ApiNotFoundResponse()
+  async updateStock(@Param('id') id: string, @Body() body: Stock) {
+    const stock = await this.stockService.getStockById(id);
+
+    if (!stock) throw new NotFoundException(`Stock #${id} not found`);
+
     return await this.stockService.updateStock(id, body);
   }
 
@@ -35,6 +47,10 @@ export class StockController {
   @ApiOperation({ summary: 'Checkout stock' })
   @UseFilters(CustomExceptionFilter)
   async checkout(@Param('id') id: string, @Body() body: CheckoutDto) {
+    const stock = await this.stockService.getStockById(id);
+
+    if (!stock) throw new NotFoundException(`Stock #${id} not found`);
+
     return await this.stockService.checkout(id, body);
   }
 }

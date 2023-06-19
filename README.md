@@ -1,18 +1,34 @@
-# DT-SELF-CHECKOUT demo
+## DT-SELF-CHECKOUT demo
 
-## Documentation @ deafult port:
+### Using sqlite3 for local development & TypeORM
+
+```
+./db/ormconfig.ts
+```
+
+---
+
+##
+
+## Documentation @ default port:
 
 ```
 127.0.0.1:4000/swagger
 ```
 
-## Installation
+## .REST file for local testing:
+
+```
+./db.REST
+```
+
+## Installation:
 
 ```bash
 $ yarn
 ```
 
-## Running the app
+## Running the app:
 
 ```bash
 # development
@@ -25,7 +41,7 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test
+## Tests:
 
 ```bash
 # unit tests

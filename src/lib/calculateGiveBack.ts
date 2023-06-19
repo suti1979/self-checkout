@@ -5,6 +5,7 @@ export function calculateGiveBack(
   inserted: TransactionData,
   price: number,
   bank: TransactionData,
+  eurHufValue: number | null,
 ): TransactionData {
   const validKeys = [
     '5',
@@ -21,7 +22,7 @@ export function calculateGiveBack(
     '20000',
   ];
 
-  const totalInserted = Object.keys(inserted).reduce((acc, key) => {
+  let totalInserted = Object.keys(inserted).reduce((acc, key) => {
     if (validKeys.includes(key)) {
       return acc + parseInt(key) * inserted[key];
     } else {
@@ -29,11 +30,12 @@ export function calculateGiveBack(
     }
   }, 0);
 
+  if (eurHufValue) {
+    totalInserted = Math.round((totalInserted * eurHufValue) / 5) * 5;
+  }
+
   if (totalInserted < price) {
-    throw new HttpException(
-      `Not enough banknotes to give back the required amount`,
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new HttpException(`Not enough banknotes inserted`, HttpStatus.BAD_REQUEST);
   }
 
   const giveBackNotes: TransactionData = {};

@@ -19,7 +19,7 @@
 ## .REST file for local testing:
 
 ```
-./db.REST
+./db/db.REST
 ```
 
 ## Installation:

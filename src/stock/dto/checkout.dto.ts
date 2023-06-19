@@ -6,5 +6,5 @@ export class CheckoutDto {
   readonly inserted: TransactionData;
 
   @ApiProperty()
-  readonly price: number;
+  price: number;
 }

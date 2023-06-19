@@ -14,7 +14,7 @@ describe('calculateGiveBack', () => {
       '500': 2,
     };
 
-    const giveBack = calculateGiveBack(inserted, price, bank);
+    const giveBack = calculateGiveBack(inserted, price, bank, null);
 
     expect(giveBack).toEqual({
       '50': 1,
@@ -32,8 +32,8 @@ describe('calculateGiveBack', () => {
       '200': 1,
     };
 
-    expect(() => calculateGiveBack(inserted, price, bank)).toThrowError(
-      'Not enough banknotes to give back the required amount',
+    expect(() => calculateGiveBack(inserted, price, bank, null)).toThrowError(
+      'Not enough banknotes inserted',
     );
   });
 
@@ -46,7 +46,7 @@ describe('calculateGiveBack', () => {
       '500': 2,
     };
 
-    expect(() => calculateGiveBack(inserted, price, bank)).toThrowError(
+    expect(() => calculateGiveBack(inserted, price, bank, null)).toThrowError(
       'Not enough banknotes to give back the required amount',
     );
   });
@@ -63,6 +63,8 @@ describe('calculateGiveBack', () => {
       '500': 2,
     };
 
-    expect(() => calculateGiveBack(inserted, price, bank)).toThrowError('Invalid banknote: 51');
+    expect(() => calculateGiveBack(inserted, price, bank, null)).toThrowError(
+      'Invalid banknote: 51',
+    );
   });
 });

@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import axios from 'axios';
 
 describe('StockService', () => {
   let stockService: StockService;
@@ -89,50 +89,41 @@ describe('StockService', () => {
   describe('checkout', () => {
     it('should checkout and return the giveBack data', async () => {
       const mockStockId = '1';
-      const mockStockData = { id: mockStockId, data: { '10': 10 } };
+      const mockStockData = { id: mockStockId, data: { '100': 100 } };
       jest.spyOn(stockRepositoryMock, 'findOneBy').mockResolvedValue(mockStockData);
       jest.spyOn(stockRepositoryMock, 'save').mockResolvedValue(mockStockData);
 
-      const mockGiveBackData = { '10': 1 };
-      const calculateGiveBackMock = jest.fn().mockReturnValue(mockGiveBackData);
+      // Mock the getEurHufValue method to return a specific value
+      jest.spyOn(stockService, 'getEurHufValue').mockResolvedValue(350);
 
-      const mockCheckoutDto = { inserted: { '20': 1 }, price: 10 };
+      const mockGiveBackData = { '100': 5 };
 
-      const result = await stockService.checkout(mockStockId, mockCheckoutDto);
+      const mockCheckoutDto = { inserted: { '10': 1 }, price: 3000 };
+      const result = await stockService.checkout(mockStockId, mockCheckoutDto, true);
 
       expect(result).toEqual(mockGiveBackData);
-
       expect(stockRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: mockStockId });
-
-      // expect(calculateGiveBackMock).toHaveBeenCalledWith(
-      //   mockCheckoutDto.inserted,
-      //   mockCheckoutDto.price,
-      //   mockStockData.data,
-      // );
-
       expect(stockRepositoryMock.save).toHaveBeenCalledWith(mockStockData);
+      expect(stockService.getEurHufValue).toHaveBeenCalled();
+    });
+  });
 
-      //expect(mockStockData.data).toEqual({ '10': 1 });
+  describe('StockService', () => {
+    it('should return the EUR/HUF value', async () => {
+      const mockResponse = { data: { value: '350' } };
+      jest.spyOn(axios, 'get').mockResolvedValue(mockResponse);
+
+      const result = await stockService.getEurHufValue();
+
+      expect(axios.get).toHaveBeenCalledWith('https://eurhuf.vercel.app/api');
+      expect(result).toBe(350);
     });
 
-    // it('should throw a NotFoundException if the stock is not found', async () => {
-    //   // Mock the stockRepository's findOne method to return null
-    //   const mockStockId = '1';
-    //   jest.spyOn(stockRepositoryMock, 'findOneBy').mockResolvedValue(null);
+    it('should throw an error if there is an issue with the API', async () => {
+      jest.spyOn(axios, 'get').mockRejectedValue(new Error('API error'));
+      await expect(stockService.getEurHufValue()).rejects.toThrowError('API error');
 
-    //   // Mock the CheckoutDto
-    //   const mockCheckoutDto = { inserted: { key: 5 }, price: 10 };
-
-    //   // Expect the checkout method to throw a NotFoundException
-    //   await expect(stockService.checkout(mockStockId, mockCheckoutDto)).rejects.toThrowError(
-    //     NotFoundException,
-    //   );
-
-    //   // Verify that the stockRepository's findOne method was called with the correct parameters
-    //   expect(stockRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: mockStockId });
-
-    //   // Verify that the stockRepository's save method was not called
-    //   expect(stockRepositoryMock.save).not.toHaveBeenCalled();
-    // });
+      expect(axios.get).toHaveBeenCalledWith('https://eurhuf.vercel.app/api');
+    });
   });
 });

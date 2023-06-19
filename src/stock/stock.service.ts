@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Stock, TransactionData } from './entities/stock.entity';
 import { Repository } from 'typeorm';
 import { CheckoutDto } from './dto/checkout.dto';
-import { calculateGiveBack } from 'src/lib/calculateGiveBack';
+import { calculateGiveBack } from '../lib/calculateGiveBack';
 
 @Injectable()
 export class StockService {
   constructor(@InjectRepository(Stock) private stockRepository: Repository<Stock>) {}
 
-  async getStock(): Promise<Stock[]> {
+  async getAllStock(): Promise<Stock[]> {
     return await this.stockRepository.find();
   }
 

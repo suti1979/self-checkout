@@ -21,8 +21,17 @@ export class StockController {
 
   @Get('stock')
   @ApiOperation({ summary: 'Get all Stocks' })
-  async getStock() {
-    return await this.stockService.getStock();
+  async getAllStock() {
+    return await this.stockService.getAllStock();
+  }
+
+  @Get('stock/:id')
+  @ApiOperation({ summary: 'Get Stock by id' })
+  @ApiNotFoundResponse()
+  async getStockbyId(@Param('id') id: string) {
+    const stock = await this.stockService.getStockById(id);
+    if (!stock) throw new NotFoundException(`Stock #${id} not found`);
+    return stock;
   }
 
   @Post('stock')
@@ -37,7 +46,6 @@ export class StockController {
   @ApiNotFoundResponse()
   async updateStock(@Param('id') id: string, @Body() body: Stock) {
     const stock = await this.stockService.getStockById(id);
-
     if (!stock) throw new NotFoundException(`Stock #${id} not found`);
 
     return await this.stockService.updateStock(id, body);
@@ -48,7 +56,6 @@ export class StockController {
   @UseFilters(CustomExceptionFilter)
   async checkout(@Param('id') id: string, @Body() body: CheckoutDto) {
     const stock = await this.stockService.getStockById(id);
-
     if (!stock) throw new NotFoundException(`Stock #${id} not found`);
 
     return await this.stockService.checkout(id, body);

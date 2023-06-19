@@ -8,7 +8,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const statusCode =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    let errorMessage = 'Internal server error';
+    let errorMessage = 'Internal error';
     const message = exception.message ?? {};
 
     if (typeof message === 'object' && 'error' in message) {

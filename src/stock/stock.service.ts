@@ -30,6 +30,7 @@ export class StockService {
 
   async checkout(id: string, checkout: CheckoutDto): Promise<TransactionData> {
     const stockToUpdate = await this.getStockById(id);
+
     const giveBack = calculateGiveBack(checkout.inserted, checkout.price, stockToUpdate.data);
 
     Object.keys(giveBack).forEach((key) => {

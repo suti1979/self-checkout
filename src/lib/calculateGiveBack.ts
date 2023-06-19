@@ -30,7 +30,10 @@ export function calculateGiveBack(
   }, 0);
 
   if (totalInserted < price) {
-    throw new HttpException(`Not enough money`, HttpStatus.BAD_REQUEST);
+    throw new HttpException(
+      `Not enough banknotes to give back the required amount`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   const giveBackNotes: TransactionData = {};
